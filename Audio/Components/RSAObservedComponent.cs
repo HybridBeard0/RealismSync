@@ -2,6 +2,7 @@
 using Fika.Core.Coop.Utils;
 using Fika.Core.Networking;
 using RealismMod;
+using RealismMod.Audio;
 using UnityEngine;
 
 namespace RealismModSync.Audio.Components;
@@ -46,7 +47,7 @@ public class RSAObservedComponent : MonoBehaviour
     public void PlayGasAnalyserClips(string clip, float baseVolume)
     {
         if (clip == null) return;
-        AudioClip audioClip = RealismMod.Plugin.DeviceAudioClips[clip];
+        AudioClip audioClip = RealismMod.Plugin.RealismAudioController.DeviceAudioClips[clip];
         
         _gasAnalyserSource.volume = baseVolume * GameWorldController.GetGameVolumeAsFactor();
         _gasAnalyserSource.clip = audioClip;
@@ -55,7 +56,7 @@ public class RSAObservedComponent : MonoBehaviour
 
     public void PlayGeigerClips(string clip, float baseVolume)
     {
-        AudioClip audioClip = RealismMod.Plugin.DeviceAudioClips[clip];
+        AudioClip audioClip = RealismMod.Plugin.RealismAudioController.DeviceAudioClips[clip];
         _geigerAudioSource.volume = baseVolume * GameWorldController.GetGameVolumeAsFactor();
         _geigerAudioSource.clip = audioClip;
         _geigerAudioSource.Play();

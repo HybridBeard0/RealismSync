@@ -8,6 +8,7 @@ using Fika.Core.Modding.Events;
 using Fika.Core.Networking;
 using LiteNetLib;
 using RealismMod;
+using RealismMod.Audio;
 using RealismModSync.HazardZones.Packets;
 using UnityEngine;
 
@@ -18,13 +19,13 @@ public static class Fika
 
     public static void Register()
     {
-        FikaEventDispatcher.SubscribeEvent<FikaNetworkManagerCreatedEvent>(NetworkManagerCreated);
-        FikaEventDispatcher.SubscribeEvent<FikaGameCreatedEvent>(GameWorldStarted);
+        FikaEventDispatcher.SubscribeEvent<FikaNetworkManagerCreatedEvent>(OnNetworkManagerCreated);
+        FikaEventDispatcher.SubscribeEvent<FikaGameCreatedEvent>(OnGameWorldStarted);
     }
 
-    private static void NetworkManagerCreated(FikaNetworkManagerCreatedEvent @event)
+    private static void OnNetworkManagerCreated(FikaNetworkManagerCreatedEvent ev)
     {
-        switch (@event.Manager)
+        switch (ev.Manager)
         {
             case FikaServer server:
                 server.RegisterPacket<RealismInteractablePacket, NetPeer>(HandleInteractionChangeServer);
@@ -169,8 +170,8 @@ public static class Fika
         Plugin.REAL_Logger.LogInfo("Starting Gas Event");
         Core.DoMapGasEvent = true;
         Player player = RealismMod.Utils.GetYourPlayer();
-        AudioController.CreateAmbientAudioPlayer(player, player.gameObject.transform, RealismMod.Plugin.GasEventAudioClips, volume: 1.2f, minDelayBeforePlayback: 60f); //spooky short playback
-        AudioController.CreateAmbientAudioPlayer(player, player.gameObject.transform, RealismMod.Plugin.GasEventLongAudioClips, true, 5f, 30f, 0.2f, 55f, 65f, minDelayBeforePlayback: 0f); //long ambient
+        AmbientAudioInitializer.CreateAmbientAudioPlayer(player, player.gameObject.transform, RealismMod.Plugin.RealismAudioController.GasEventAudioClips, volume: 1.2f, minDelayBeforePlayback: 60f); //spooky short playback
+        AmbientAudioInitializer.CreateAmbientAudioPlayer(player, player.gameObject.transform, RealismMod.Plugin.RealismAudioController.GasEventLongAudioClips, true, 5f, 30f, 0.2f, 55f, 65f, minDelayBeforePlayback: 0f); //long ambient
     }
 
     private static void HandleMapRadPacket(RealismMapRadPacket packet)
@@ -179,7 +180,7 @@ public static class Fika
         Plugin.REAL_Logger.LogInfo($"Starting Map Radiation");
         Core.DoMapRad = true;
         Player player = RealismMod.Utils.GetYourPlayer();
-        RealismMod.AudioController.CreateAmbientAudioPlayer(player, player.gameObject.transform, RealismMod.Plugin.RadEventAudioClips, volume: 1f, minDelayBeforePlayback: 60f); //thunder
+        AmbientAudioInitializer.CreateAmbientAudioPlayer(player, player.gameObject.transform, RealismMod.Plugin.RealismAudioController.RadEventAudioClips, volume: 1f, minDelayBeforePlayback: 60f); //thunder
     }
 
     private static void HandleAssetPacket(RealismAssetPacket packet)
@@ -260,9 +261,10 @@ public static class Fika
         }
     }
     
-    private static void GameWorldStarted(FikaGameCreatedEvent @event)
+    private static void OnGameWorldStarted(FikaGameCreatedEvent ev)
     {
         Plugin.REAL_Logger.LogInfo("Initializing Zone Results and loading Zone data");
+
         // handle any initiation when the game world starts here
         if (Core.ZoneResults == null)
         {
@@ -283,7 +285,7 @@ public static class Fika
         Core.DoMapGasEvent = false;
         Core.DoMapRad = false;
 
-        var map = ((CoopGame)@event.Game).Location_0.Id.ToLower();
+        var map = ((CoopGame)ev.Game).Location_0.Id.ToLower();
         
         LoadZones(EZoneType.Gas, map);
         LoadZones(EZoneType.GasAssets, map);

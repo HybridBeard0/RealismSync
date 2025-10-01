@@ -6,6 +6,7 @@ using Fika.Core.Coop.Utils;
 using Fika.Core.Networking;
 using LiteNetLib;
 using RealismMod;
+using RealismMod.Audio;
 using RealismModSync.Audio.Packets;
 using SPT.Reflection.Patching;
 using UnityEngine;
@@ -16,12 +17,12 @@ public class PlayGasAnalyserClipPatch : ModulePatch
 {
     protected override MethodBase GetTargetMethod()
     {
-        return typeof(RealismAudioControllerComponent).GetMethod(
-            nameof(RealismAudioControllerComponent.PlayGasAnalyserClips), BindingFlags.Instance | BindingFlags.Public);
+        return typeof(RealismAudioController).GetMethod(
+            nameof(RealismAudioController.PlayGasAnalyserClips), BindingFlags.Instance | BindingFlags.Public);
     }
 
     [PatchPostfix]
-    public static void Patch(RealismAudioControllerComponent __instance, ref AudioSource ____gasAnalyserSource)
+    public static void Patch(RealismAudioController __instance, ref AudioSource ____gasAnalyserSource)
     {
         CoopHandler.TryGetCoopHandler(out var coopHandler);
         if (coopHandler == null)
@@ -29,12 +30,11 @@ public class PlayGasAnalyserClipPatch : ModulePatch
             Plugin.REAL_Logger.LogInfo($"CoopHandler is null in Geiger Clip Patch");
             return;
         }
-        
-        
+
+
         // recreate how realism handles this.
         // technically I dont need volumeModi.
-        float volumeModi = 1f;
-        string clip = RealismMod.Plugin.RealismAudioControllerComponent.GetGasAnalsyerClip(HazardTracker.BaseTotalToxicityRate, out volumeModi);
+        string clip = RealismMod.Plugin.RealismAudioController.GetGasAnalsyerClip(HazardTracker.BaseTotalToxicityRate, out float volumeModi);
         if (clip == null)
         {
             Plugin.REAL_Logger.LogInfo($"Could not detect a suitable gas analyzer clip");

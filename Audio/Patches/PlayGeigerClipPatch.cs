@@ -8,6 +8,7 @@ using Fika.Core.Coop.Utils;
 using Fika.Core.Networking;
 using LiteNetLib;
 using RealismMod;
+using RealismMod.Audio;
 using RealismModSync.Audio.Packets;
 using SPT.Reflection.Patching;
 using UnityEngine;
@@ -18,12 +19,12 @@ public class PlayGeigerClipPatch : ModulePatch
 {
     protected override MethodBase GetTargetMethod()
     {
-        return typeof(RealismAudioControllerComponent).GetMethod(
-            nameof(RealismAudioControllerComponent.PlayGeigerClips), BindingFlags.Instance | BindingFlags.Public);
+        return typeof(RealismAudioController).GetMethod(
+            nameof(RealismAudioController.PlayGeigerClips), BindingFlags.Instance | BindingFlags.Public);
     }
 
     [PatchPostfix]
-    public static void Patch(RealismAudioControllerComponent __instance, ref AudioSource ____geigerAudioSource)
+    public static void Patch(RealismAudioController __instance, ref AudioSource ____geigerAudioSource)
     {
         CoopHandler.TryGetCoopHandler(out var coopHandler);
         if (coopHandler == null)
@@ -32,9 +33,9 @@ public class PlayGeigerClipPatch : ModulePatch
             return;
         }
         
-        string[] clips = RealismMod.Plugin.RealismAudioControllerComponent.GetGeigerClip(HazardTracker.BaseTotalRadiationRate);
+        string[] clips = RealismMod.Plugin.RealismAudioController.GetGeigerClip(HazardTracker.BaseTotalRadiationRate);
         if (clips == null) return;
-        int rndNumber = UnityEngine.Random.Range(0, clips.Length);
+        int rndNumber = Random.Range(0, clips.Length);
         string clip = clips[rndNumber];
         
         var packet = new RealismAudioPacket()

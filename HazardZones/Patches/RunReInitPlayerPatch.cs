@@ -4,6 +4,7 @@ using Fika.Core.Coop.Utils;
 using Fika.Core.Networking;
 using LiteNetLib;
 using RealismMod;
+using RealismMod.Audio;
 using RealismModSync.HazardZones.Packets;
 using SPT.Reflection.Patching;
 
@@ -13,8 +14,8 @@ public class RunReInitPlayerPatch : ModulePatch
 {
     protected override MethodBase GetTargetMethod()
     {
-        return typeof(RealismAudioControllerComponent).GetMethod(
-            nameof(RealismAudioControllerComponent.RunReInitPlayer), BindingFlags.Instance | BindingFlags.Public);
+        return typeof(RealismAudioController).GetMethod(
+            nameof(RealismAudioController.RunReInitPlayer), BindingFlags.Instance | BindingFlags.Public);
     }
 
     [PatchPostfix]

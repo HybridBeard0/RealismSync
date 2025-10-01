@@ -19,37 +19,37 @@ namespace RealismModSync
     public class Plugin : BaseUnityPlugin
     {
         public static ManualLogSource REAL_Logger;
-        
+
         protected void Awake()
         {
             REAL_Logger = Logger;
-            
+
             // Bind Config
             StanceReplication.Config.Bind(Config);
             HazardZones.Config.Bind(Config);
             Audio.Config.Bind(Config);
             REAL_Logger.LogInfo($"{nameof(Plugin)} has binded settings");
-            
+
             // Patch
             StanceReplication.Patch.Awake();
             HazardZones.Patch.Awake();
             Audio.Patch.Awake();
             REAL_Logger.LogInfo($"{nameof(Plugin)} has patched methods");
-            
+
             // Core Initialize
             StanceReplication.Core.Initialize();
             HazardZones.Core.Initialize();
             Audio.Core.Initialize();
             REAL_Logger.LogInfo($"{nameof(Plugin)} has initialized core variables");
-            
+
             // Fika 
             StanceReplication.Fika.Register();
             HazardZones.Fika.Register();
             Audio.Fika.Register();
             REAL_Logger.LogInfo($"{nameof(Plugin)} has registered Fika events");
-            
+
             // anything else? idk I just vibe here
-        
+
             REAL_Logger.LogInfo($"{nameof(Plugin)} has been loaded.");
 
         }

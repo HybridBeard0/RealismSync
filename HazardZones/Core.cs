@@ -87,6 +87,6 @@ public static class Core
     public static async Task LoadLooseLoot(Vector3 position, Vector3 rotation, string templateID, string mongoID)
     {
         Quaternion quat = Quaternion.Euler(rotation);
-        await RealismModSync.Utils.LoadLoot(position, quat,templateID, mongoID);
+        await Utils.LoadLoot(position, quat,templateID, mongoID);
     }
 }

@@ -1,7 +1,6 @@
 ﻿using BepInEx.Configuration;
 using RealismMod;
 
-
 namespace RealismModSync.Audio;
     
 public static class Config
@@ -14,8 +13,8 @@ public static class Config
 
     public static void Bind(ConfigFile config)
     {
-        Enabled = config.Bind<bool>(SECTION, "Enable Audio Sync. Requires Game restart.", true, new ConfigDescription("Enable/Disable Audio Sync Entirely", null, new ConfigurationManagerAttributes { Order = 1 }));
-        EnableForBots = config.Bind<bool>(SECTION, "Enable Audio Sync For Bots", true, new ConfigDescription("Requires Restart. Toggles Audio sync for bots.", null, new ConfigurationManagerAttributes { Order = 1 }));
+        Enabled = config.Bind(SECTION, "Enable Audio Sync. Requires Game restart.", true, new ConfigDescription("Enable/Disable Audio Sync Entirely", null, new ConfigurationManagerAttributes { Order = 1 }));
+        EnableForBots = config.Bind(SECTION, "Enable Audio Sync For Bots", true, new ConfigDescription("Requires Restart. Toggles Audio sync for bots.", null, new ConfigurationManagerAttributes { Order = 1 }));
     }
     
 }

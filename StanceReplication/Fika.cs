@@ -14,13 +14,13 @@ public static class Fika
 
     public static void Register()
     {
-        FikaEventDispatcher.SubscribeEvent<FikaNetworkManagerCreatedEvent>(NetworkManagerCreated);
-        FikaEventDispatcher.SubscribeEvent<FikaGameCreatedEvent>(GameWorldStarted);
+        FikaEventDispatcher.SubscribeEvent<FikaNetworkManagerCreatedEvent>(OnNetworkManagerCreated);
+        FikaEventDispatcher.SubscribeEvent<FikaGameCreatedEvent>(OnGameWorldStarted);
     }
 
-    private static void NetworkManagerCreated(FikaNetworkManagerCreatedEvent @event)
+    private static void OnNetworkManagerCreated(FikaNetworkManagerCreatedEvent ev)
     {
-        switch (@event.Manager)
+        switch (ev.Manager)
         {
             case FikaServer server:
                 server.RegisterPacket<RealismStanceReplicationPacket, NetPeer>(HandleRealismPacketServer);
@@ -31,7 +31,7 @@ public static class Fika
         }
     }
     
-    private static void GameWorldStarted(FikaGameCreatedEvent @event)
+    private static void OnGameWorldStarted(FikaGameCreatedEvent ev)
     {
         if (Core.ObservedComponents != null)
         {

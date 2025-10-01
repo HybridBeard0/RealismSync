@@ -32,19 +32,26 @@ namespace RealismModSync.StanceReplication.Patches
 
         private static void TransitionShoulder(bool leftShoulder)
         {
-            
-            CoopHandler fikaCoopHandler;
-            if (CoopHandler.TryGetCoopHandler(out fikaCoopHandler))
+
+            if (CoopHandler.TryGetCoopHandler(out CoopHandler fikaCoopHandler))
             {
-                var leftStanceChangePacket = new FirearmSubPackets.LeftStanceChangePacket();
-                leftStanceChangePacket.LeftStance = leftShoulder;
-                
-                fikaCoopHandler.MyPlayer.PacketSender.FirearmPackets.Enqueue(new WeaponPacket()
+                var leftStanceChangePacket = new FirearmSubPackets.LeftStanceChangePacket
+                {
+                    LeftStance = leftShoulder
+                };
+
+                //fikaCoopHandler.MyPlayer.Packet.FirearmPackets.Enqueue(
+                CoopPlayer player = fikaCoopHandler.MyPlayer;
+
+                WeaponPacket packet = new()
                 {
                     Type = SubPacket.EFirearmSubPacketType.LeftStanceChange,
-                    SubPacket =  leftStanceChangePacket
-                });
-            } 
+                    SubPacket = leftStanceChangePacket
+                };
+
+                player.PacketSender.SendPacket(ref packet);
+
+            }
         }
 
         [PatchPostfix]
