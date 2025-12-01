@@ -12,9 +12,10 @@ using ChartAndGraph;
 
 namespace RealismModSync
 {
-    [BepInPlugin("RealismMod.Sync", "RealismModSync", "1.0.1")]
+    [BepInPlugin("RealismMod.Sync", "RealismModSync", "1.0.3")]
     [BepInDependency("com.fika.core", BepInDependency.DependencyFlags.HardDependency)]
     [BepInDependency("RealismMod", BepInDependency.DependencyFlags.HardDependency)]
+    [BepInDependency("com.kobethuy.BringMeToLifeMod", BepInDependency.DependencyFlags.SoftDependency)]
     [BepInIncompatibility("com.lacyway.rsr")]
     public class Plugin : BaseUnityPlugin
     {
@@ -28,30 +29,31 @@ namespace RealismModSync
             StanceReplication.Config.Bind(Config);
             HazardZones.Config.Bind(Config);
             Audio.Config.Bind(Config);
-            REAL_Logger.LogInfo($"{nameof(Plugin)} has binded settings");
+            Health.Config.Bind(Config);
+            REAL_Logger.LogInfo($"{nameof(Plugin)} has bound settings");
 
             // Patch
             StanceReplication.Patch.Awake();
             HazardZones.Patch.Awake();
             Audio.Patch.Awake();
+            Health.Patch.Awake();
             REAL_Logger.LogInfo($"{nameof(Plugin)} has patched methods");
 
             // Core Initialize
             StanceReplication.Core.Initialize();
             HazardZones.Core.Initialize();
             Audio.Core.Initialize();
+            Health.Core.Initialize();
             REAL_Logger.LogInfo($"{nameof(Plugin)} has initialized core variables");
 
             // Fika 
             StanceReplication.Fika.Register();
             HazardZones.Fika.Register();
             Audio.Fika.Register();
+            Health.Fika.Register();
             REAL_Logger.LogInfo($"{nameof(Plugin)} has registered Fika events");
 
-            // anything else? idk I just vibe here
-
             REAL_Logger.LogInfo($"{nameof(Plugin)} has been loaded.");
-
         }
     }
 }

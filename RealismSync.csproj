@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
   <PropertyGroup>
@@ -39,39 +39,39 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="0Harmony">
-      <HintPath>D:\ref\0Harmony.dll</HintPath>
+      <HintPath>F:\temp\Code Projects\Real Fika\RealismSync\RealismSync\RealismSync-main\libs\0Harmony.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="Newtonsoft.Json">
-      <HintPath>D:\ref\Newtonsoft.Json.dll</HintPath>
+      <HintPath>F:\temp\Code Projects\Real Fika\RealismSync\RealismSync\RealismSync-main\libs\Newtonsoft.Json.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="RealismMod">
-      <HintPath>D:\ref\RealismMod.dll</HintPath>
+      <HintPath>F:\temp\Code Projects\Real Fika\RealismSync\RealismSync\RealismSync-main\libs\RealismMod.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="spt-reflection">
-      <HintPath>D:\ref\spt-reflection.dll</HintPath>
+      <HintPath>F:\temp\Code Projects\Real Fika\RealismSync\RealismSync\RealismSync-main\libs\spt-reflection.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="AnimationSystem.Types">
-      <HintPath>D:\ref\AnimationSystem.Types.dll</HintPath>
+      <HintPath>F:\temp\Code Projects\Real Fika\RealismSync\RealismSync\RealismSync-main\libs\AnimationSystem.Types.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="Assembly-CSharp">
-      <HintPath>D:\ref\Assembly-CSharp.dll</HintPath>
+      <HintPath>F:\temp\Code Projects\Real Fika\RealismSync\RealismSync\RealismSync-main\libs\Assembly-CSharp.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="BepInEx">
-      <HintPath>D:\ref\BepInEx.dll</HintPath>
+      <HintPath>F:\temp\Code Projects\Real Fika\RealismSync\RealismSync\RealismSync-main\libs\BepInEx.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="Comfort">
-      <HintPath>D:\ref\Comfort.dll</HintPath>
+      <HintPath>F:\temp\Code Projects\Real Fika\RealismSync\RealismSync\RealismSync-main\libs\Comfort.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="Fika.Core">
-      <HintPath>D:\ref\Fika.Core.dll</HintPath>
+      <HintPath>F:\temp\Code Projects\Real Fika\RealismSync\RealismSync\RealismSync-main\libs\Fika.Core.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="System" />
@@ -83,27 +83,27 @@
     <Reference Include="System.Net.Http" />
     <Reference Include="System.Xml" />
     <Reference Include="UnityEngine">
-      <HintPath>D:\ref\UnityEngine.dll</HintPath>
+      <HintPath>F:\temp\Code Projects\Real Fika\RealismSync\RealismSync\RealismSync-main\libs\UnityEngine.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="UnityEngine.AudioModule">
-      <HintPath>D:\ref\UnityEngine.AudioModule.dll</HintPath>
+      <HintPath>F:\temp\Code Projects\Real Fika\RealismSync\RealismSync\RealismSync-main\libs\UnityEngine.AudioModule.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="UnityEngine.CoreModule">
-      <HintPath>D:\ref\UnityEngine.CoreModule.dll</HintPath>
+      <HintPath>F:\temp\Code Projects\Real Fika\RealismSync\RealismSync\RealismSync-main\libs\UnityEngine.CoreModule.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="UnityEngine.InputLegacyModule">
-      <HintPath>D:\ref\UnityEngine.InputLegacyModule.dll</HintPath>
+      <HintPath>F:\temp\Code Projects\Real Fika\RealismSync\RealismSync\RealismSync-main\libs\UnityEngine.InputLegacyModule.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="Realism">
-      <HintPath>D:\ref\RealismMod.dll</HintPath>
+      <HintPath>F:\temp\Code Projects\Real Fika\RealismSync\RealismSync\RealismSync-main\libs\ref\RealismMod.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="DissonanceVoip">
-      <HintPath>D:\ref\DissonanceVoip.dll</HintPath>
+      <HintPath>F:\temp\Code Projects\Real Fika\RealismSync\RealismSync\RealismSync-main\libs\DissonanceVoip.dll</HintPath>
       <Private>False</Private>
     </Reference>
   </ItemGroup>
@@ -140,6 +140,15 @@
     <Compile Include="HazardZones\Patches\RunReInitPlayerPatch.cs" />
     <Compile Include="HazardZones\Patches\ShouldSpawnZonePatch.cs" />
     <Compile Include="HazardZones\Patches\InteractableStateChangePatch.cs" />
+    <Compile Include="Health\Config.cs" />
+    <Compile Include="Health\Core.cs" />
+    <Compile Include="Health\Fika.cs" />
+    <Compile Include="Health\NetworkSync.cs" />
+    <Compile Include="Health\Patch.cs" />
+    <Compile Include="Health\PluginConfig.cs" />
+    <Compile Include="Health\Packets\RealismMedicalSyncPacket.cs" />
+    <Compile Include="Health\Patches\RealismHealthControllerUpdatePatch.cs" />
+    <Compile Include="Health\Patches\RealismMedicalSyncPatches.cs" />
     <Compile Include="Plugin.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="StanceReplication\Components\RSR_Component.cs" />

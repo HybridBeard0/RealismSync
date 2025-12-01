@@ -22,4 +22,16 @@ public class Utils
         IPlayer player = Singleton<GameWorld>.Instance.RegisteredPlayers.FirstOrDefault(new Func<IPlayer, bool>(RealismMod.Utils.IPlayerMatches));
         Singleton<GameWorld>.Instance.ThrowItem(item, player, position, rotation, Vector3.zero, Vector3.zero, true, true, EFTHardSettings.Instance.ThrowLootMakeVisibleDelay);
     }
+
+    public static Player GetYourPlayer()
+    {
+        if (!Singleton<GameWorld>.Instantiated)
+            return null;
+
+        var gameWorld = Singleton<GameWorld>.Instance;
+        if (gameWorld == null)
+            return null;
+
+        return gameWorld.MainPlayer;
+    }
 }
