@@ -20,24 +20,24 @@ namespace RealismModSync.Health.Patches
 
             try
             {
-                // Find RealismMod Plugin class
-                var realismPluginType = AccessTools.TypeByName("RealismMod.Plugin");
-                if (realismPluginType == null)
+                // Find RealismHealthController class
+                var realismHealthControllerType = AccessTools.TypeByName("RealismMod.RealismHealthController");
+                if (realismHealthControllerType == null)
                 {
-                    Plugin.REAL_Logger.LogWarning("RealismMod.Plugin type not found - health sync disabled");
+                    Plugin.REAL_Logger.LogWarning("RealismMod.RealismHealthController type not found - health tick patch disabled");
                     return false;
                 }
 
-                // Try to find the Update method
-                _targetMethod = AccessTools.Method(realismPluginType, "Update");
+                // Try to find the HealthEffecTick method
+                _targetMethod = AccessTools.Method(realismHealthControllerType, "HealthEffecTick");
                 
                 if (_targetMethod == null)
                 {
-                    Plugin.REAL_Logger.LogWarning("RealismMod.Plugin.Update method not found - health sync disabled");
+                    Plugin.REAL_Logger.LogWarning("RealismMod.RealismHealthController.HealthEffecTick method not found - health tick patch disabled");
                     return false;
                 }
 
-                Plugin.REAL_Logger.LogInfo("RealismMod.Plugin.Update method found successfully");
+                Plugin.REAL_Logger.LogInfo("RealismMod.RealismHealthController.HealthEffecTick method found successfully");
                 return true;
             }
             catch (System.Exception ex)
@@ -69,7 +69,7 @@ namespace RealismModSync.Health.Patches
                 Player player = gameWorld.MainPlayer;
                 
                 if (player == null)
-                    return true; // Let original method run if no player yet
+                    return false; // Don't run health tick if no player yet
 
                 // Check if health controller should tick
                 if (!Core.ShouldHealthControllerTick(player))

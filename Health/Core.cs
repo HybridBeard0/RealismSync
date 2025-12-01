@@ -1,5 +1,6 @@
 using EFT;
 using Comfort.Common;
+using Fika.Core.Networking;
 using UnityEngine;
 
 namespace RealismModSync.Health
@@ -46,6 +47,47 @@ namespace RealismModSync.Health
             // If this is the main player and they're dead, don't tick
             if (player.IsYourPlayer && !mainPlayer.HealthController.IsAlive)
                 return false;
+
+            return true;
+        }
+
+        public static bool CanSendNetworkPackets(Player player)
+        {
+            // Check if game world is active
+            if (!Singleton<GameWorld>.Instantiated)
+                return false;
+
+            var gameWorld = Singleton<GameWorld>.Instance;
+            if (gameWorld == null)
+                return false;
+
+            // Check if player is valid
+            if (player == null || !player.IsYourPlayer)
+                return false;
+
+            // Don't send packets during loading or if player is dead
+            var mainPlayer = gameWorld.MainPlayer;
+            if (mainPlayer == null || !mainPlayer.HealthController.IsAlive)
+                return false;
+
+            // Check if Fika network is available and running
+            if (Singleton<FikaClient>.Instantiated)
+            {
+                var client = Singleton<FikaClient>.Instance;
+                if (client?.NetClient == null || !client.NetClient.IsRunning)
+                    return false;
+            }
+            else if (Singleton<FikaServer>.Instantiated)
+            {
+                var server = Singleton<FikaServer>.Instance;
+                if (server?.NetServer == null || !server.NetServer.IsRunning)
+                    return false;
+            }
+            else
+            {
+                // Neither client nor server is available
+                return false;
+            }
 
             return true;
         }

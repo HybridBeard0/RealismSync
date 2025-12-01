@@ -81,6 +81,10 @@ namespace RealismModSync.Health.Patches
                 if (!player.IsYourPlayer)
                     return;
 
+                // Check if we can send network packets
+                if (!Core.CanSendNetworkPackets(player))
+                    return;
+
                 // Make sure it's a CoopPlayer to get NetId
                 var coopPlayer = player as CoopPlayer;
                 if (coopPlayer == null)
@@ -168,6 +172,10 @@ namespace RealismModSync.Health.Patches
                 var player = playerField?.GetValue(healthController) as Player;
                 
                 if (player == null || !player.IsYourPlayer)
+                    return;
+
+                // Check if we can send network packets
+                if (!Core.CanSendNetworkPackets(player))
                     return;
 
                 var coopPlayer = player as CoopPlayer;
