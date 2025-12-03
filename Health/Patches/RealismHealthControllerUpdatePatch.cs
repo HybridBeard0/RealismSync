@@ -5,6 +5,9 @@ using Comfort.Common;
 
 namespace RealismModSync.Health.Patches
 {
+    /// <summary>
+    /// Patches RealismHealthController.HealthEffecTick to prevent NullReferenceExceptions during loading/transitions
+    /// </summary>
     [HarmonyPatch]
     public class RealismHealthControllerUpdatePatch
     {

@@ -67,6 +67,10 @@ namespace RealismModSync.Health
                 var medKitItem = item as MedsItemClass;
                 if (medKitItem != null)
                 {
+                    // Validate the incoming HpResource value
+                    if (!ValidateHpResource(data.HpResource, medKitItem.LocalizedName()))
+                        return;
+
                     // Use reflection to access HpResource field
                     var medKitType = medKitItem.GetType();
                     var hpResourceField = HarmonyLib.AccessTools.Field(medKitType, "HpResource");
@@ -105,12 +109,16 @@ namespace RealismModSync.Health
                 var medKitItem = item as MedsItemClass;
                 if (medKitItem != null)
                 {
+                    // Validate the incoming charges value
+                    if (!ValidateHpResource(data.NewCharges, medKitItem.LocalizedName()))
+                        return;
+
                     var medKitType = medKitItem.GetType();
                     var hpResourceField = HarmonyLib.AccessTools.Field(medKitType, "HpResource");
                     if (hpResourceField != null)
                     {
                         hpResourceField.SetValue(medKitItem, data.NewCharges);
-                        Plugin.REAL_Logger.LogInfo($"Synced med charges for {data.ItemId}: {data.NewCharges}");
+                        Plugin.REAL_Logger.LogInfo($"Synced med charges for {medKitItem.LocalizedName()}: {data.NewCharges}");
                     }
                 }
             }
@@ -132,8 +140,52 @@ namespace RealismModSync.Health
 
         private static Item FindItemById(Player player, string itemId)
         {
-            // Find item in player's inventory by ID
-            return player?.Profile?.Inventory?.AllRealPlayerItems?.FirstOrDefault(item => item.Id == itemId);
+            if (player == null || string.IsNullOrEmpty(itemId))
+                return null;
+
+            try
+            {
+                // Find item in player's inventory by ID
+                return player?.Profile?.Inventory?.AllRealPlayerItems?.FirstOrDefault(item => item != null && item.Id == itemId);
+            }
+            catch (System.Exception ex)
+            {
+                Plugin.REAL_Logger.LogError($"Error finding item {itemId}: {ex.Message}");
+                return null;
+            }
+        }
+
+        /// <summary>
+        /// Validates HpResource value to prevent invalid states that could break inventory sync
+        /// </summary>
+        private static bool ValidateHpResource(float value, string itemName)
+        {
+            if (float.IsNaN(value))
+            {
+                Plugin.REAL_Logger.LogWarning($"Rejected NaN HpResource value for {itemName}");
+                return false;
+            }
+
+            if (float.IsInfinity(value))
+            {
+                Plugin.REAL_Logger.LogWarning($"Rejected Infinity HpResource value for {itemName}");
+                return false;
+            }
+
+            if (value < 0f)
+            {
+                Plugin.REAL_Logger.LogWarning($"Rejected negative HpResource value for {itemName}: {value}");
+                return false;
+            }
+
+            // Additional safety: reject unreasonably large values (max resource is typically < 10000)
+            if (value > 100000f)
+            {
+                Plugin.REAL_Logger.LogWarning($"Rejected unreasonably large HpResource value for {itemName}: {value}");
+                return false;
+            }
+
+            return true;
         }
     }
 }

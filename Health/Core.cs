@@ -48,6 +48,11 @@ namespace RealismModSync.Health
             if (player.IsYourPlayer && !mainPlayer.HealthController.IsAlive)
                 return false;
 
+            // IMPORTANT: Check if Fika network is still running
+            // During extraction/cleanup, network shuts down but players still exist briefly
+            if (!IsNetworkActive())
+                return false;
+
             return true;
         }
 
@@ -71,25 +76,70 @@ namespace RealismModSync.Health
                 return false;
 
             // Check if Fika network is available and running
-            if (Singleton<FikaClient>.Instantiated)
-            {
-                var client = Singleton<FikaClient>.Instance;
-                if (client?.NetClient == null || !client.NetClient.IsRunning)
-                    return false;
-            }
-            else if (Singleton<FikaServer>.Instantiated)
-            {
-                var server = Singleton<FikaServer>.Instance;
-                if (server?.NetServer == null || !server.NetServer.IsRunning)
-                    return false;
-            }
-            else
-            {
-                // Neither client nor server is available
+            if (!IsNetworkActive())
                 return false;
-            }
 
             return true;
+        }
+
+        /// <summary>
+        /// Checks if Fika network layer is active and ready to send/receive packets
+        /// Returns false during extraction/cleanup when network is shutting down
+        /// </summary>
+        private static bool IsNetworkActive()
+        {
+            try
+            {
+                // Check if Fika client is running
+                if (Singleton<FikaClient>.Instantiated)
+                {
+                    var client = Singleton<FikaClient>.Instance;
+                    if (client == null)
+                        return false;
+
+                    // Check if NetClient exists and is running
+                    if (client.NetClient == null || !client.NetClient.IsRunning)
+                        return false;
+
+                    // Additional check: verify PacketSender is available
+                    // During extraction, this gets disposed before NetClient stops
+                    var packetSenderField = client.GetType().GetField("PacketSender", 
+                        System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
+                    
+                    if (packetSenderField != null)
+                    {
+                        var packetSender = packetSenderField.GetValue(client);
+                        if (packetSender == null)
+                            return false; // PacketSender disposed, network is shutting down
+                    }
+
+                    return true;
+                }
+                // Check if Fika server is running
+                else if (Singleton<FikaServer>.Instantiated)
+                {
+                    var server = Singleton<FikaServer>.Instance;
+                    if (server == null)
+                        return false;
+
+                    // Check if NetServer exists and is running
+                    if (server.NetServer == null || !server.NetServer.IsRunning)
+                        return false;
+
+                    return true;
+                }
+                else
+                {
+                    // Neither client nor server is available
+                    return false;
+                }
+            }
+            catch
+            {
+                // If any error occurs checking network state, assume it's not active
+                // This prevents crashes during cleanup/disposal
+                return false;
+            }
         }
 
         public static bool IsPlayerUnconsciousOrReviving(Player player)

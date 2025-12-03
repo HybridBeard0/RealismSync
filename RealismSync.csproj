@@ -12,7 +12,7 @@
     <FileAlignment>512</FileAlignment>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
     <Deterministic>true</Deterministic>
-    <TargetFrameworkProfile />    
+    <TargetFrameworkProfile />
     <LangVersion>latest</LangVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
@@ -107,7 +107,6 @@
       <Private>False</Private>
     </Reference>
   </ItemGroup>
-
   <ItemGroup>
     <Compile Include="Audio\Components\RSAObservedComponent.cs" />
     <Compile Include="Audio\Config.cs" />
@@ -145,6 +144,9 @@
     <Compile Include="Health\Fika.cs" />
     <Compile Include="Health\NetworkSync.cs" />
     <Compile Include="Health\Patch.cs" />
+    <Compile Include="Health\Patches\FikaHealthSyncCompatibilityPatch.cs" />
+    <Compile Include="Health\Patches\InventorySyncSafetyPatch.cs" />
+    <Compile Include="Health\Patches\RealismCustomEffectPatch.cs" />
     <Compile Include="Health\PluginConfig.cs" />
     <Compile Include="Health\Packets\RealismMedicalSyncPacket.cs" />
     <Compile Include="Health\Patches\RealismHealthControllerUpdatePatch.cs" />
@@ -163,6 +165,13 @@
     <Compile Include="StanceReplication\Patches\ObservedCoopPlayer_Create_Patch.cs" />
     <Compile Include="StanceReplication\Patches\RealismLeftShoulderSwapPatch.cs" />
     <Compile Include="ToolsAndUtils\Utils.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Health\DMD_PATCHING_FIX.md" />
+    <None Include="Health\FIX_HARMONYWARNING_SPAM.md" />
+    <None Include="Health\README_HEALTH_SYNC_FIX.md" />
+    <None Include="Health\README_INVENTORY_SAFETY.md" />
+    <None Include="MOD_COMPATIBILITY.md" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

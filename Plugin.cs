@@ -12,10 +12,11 @@ using ChartAndGraph;
 
 namespace RealismModSync
 {
-    [BepInPlugin("RealismMod.Sync", "RealismModSync", "1.0.3")]
+    [BepInPlugin("RealismMod.Sync", "RealismModSync", "1.0.4")]
     [BepInDependency("com.fika.core", BepInDependency.DependencyFlags.HardDependency)]
     [BepInDependency("RealismMod", BepInDependency.DependencyFlags.HardDependency)]
     [BepInDependency("com.kobethuy.BringMeToLifeMod", BepInDependency.DependencyFlags.SoftDependency)]
+    [BepInDependency("com.DrakiaXYZ.QuestsExtended", BepInDependency.DependencyFlags.SoftDependency)]
     [BepInIncompatibility("com.lacyway.rsr")]
     public class Plugin : BaseUnityPlugin
     {
@@ -30,6 +31,7 @@ namespace RealismModSync
             HazardZones.Config.Bind(Config);
             Audio.Config.Bind(Config);
             Health.Config.Bind(Config);
+            QuestExtended.Config.Bind(Config);
             REAL_Logger.LogInfo($"{nameof(Plugin)} has bound settings");
 
             // Patch
@@ -37,6 +39,7 @@ namespace RealismModSync
             HazardZones.Patch.Awake();
             Audio.Patch.Awake();
             Health.Patch.Awake();
+            QuestExtended.Patch.Awake();
             REAL_Logger.LogInfo($"{nameof(Plugin)} has patched methods");
 
             // Core Initialize
@@ -44,6 +47,7 @@ namespace RealismModSync
             HazardZones.Core.Initialize();
             Audio.Core.Initialize();
             Health.Core.Initialize();
+            QuestExtended.Core.Initialize();
             REAL_Logger.LogInfo($"{nameof(Plugin)} has initialized core variables");
 
             // Fika 
@@ -51,6 +55,7 @@ namespace RealismModSync
             HazardZones.Fika.Register();
             Audio.Fika.Register();
             Health.Fika.Register();
+            QuestExtended.Fika.Register();
             REAL_Logger.LogInfo($"{nameof(Plugin)} has registered Fika events");
 
             REAL_Logger.LogInfo($"{nameof(Plugin)} has been loaded.");
