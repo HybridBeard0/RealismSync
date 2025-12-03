@@ -69,15 +69,25 @@ namespace RealismModSync.Health.Patches
                     return false;
 
                 // Try to get the player from the health controller
-                // This uses reflection since the field name might vary
+                // Search for player field using multiple possible names
                 var healthControllerType = activeHealthController.GetType();
-                var playerField = AccessTools.Field(healthControllerType, "player_0");
-                
-                if (playerField == null)
-                    return true; // Can't get player, let it through
+                Player player = null;
 
-                var player = playerField.GetValue(activeHealthController) as Player;
+                // Try common field names for player reference
+                var playerFieldNames = new[] { "player_0", "_player", "player", "Player" };
                 
+                foreach (var fieldName in playerFieldNames)
+                {
+                    var playerField = AccessTools.Field(healthControllerType, fieldName);
+                    if (playerField != null)
+                    {
+                        player = playerField.GetValue(activeHealthController) as Player;
+                        if (player != null)
+                            break;
+                    }
+                }
+
+                // If we couldn't find the player, be conservative and block the drain
                 if (player == null)
                     return false;
 

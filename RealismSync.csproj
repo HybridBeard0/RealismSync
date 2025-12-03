@@ -147,6 +147,7 @@
     <Compile Include="Health\Patches\FikaHealthSyncCompatibilityPatch.cs" />
     <Compile Include="Health\Patches\InventorySyncSafetyPatch.cs" />
     <Compile Include="Health\Patches\RealismCustomEffectPatch.cs" />
+    <Compile Include="Health\Patches\RealismHealthSerializationPatch.cs" />
     <Compile Include="Health\Patches\RealismResourceDrainSafetyPatch.cs" />
     <Compile Include="Health\PluginConfig.cs" />
     <Compile Include="Health\Packets\RealismMedicalSyncPacket.cs" />
@@ -175,7 +176,9 @@
     <Compile Include="ToolsAndUtils\Utils.cs" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="FIX_OBSERVED_PLAYER_SPAWN.md" />
     <None Include="Health\DMD_PATCHING_FIX.md" />
+    <None Include="Health\FIX_CUSTOM_EFFECTS_SERIALIZATION.md" />
     <None Include="Health\FIX_EXTRACTION_ERRORS.md" />
     <None Include="Health\FIX_HARMONYWARNING_SPAM.md" />
     <None Include="Health\FIX_RESOURCE_DRAIN_EXTRACTION.md" />
@@ -186,6 +189,7 @@
     <None Include="QuestExtended\FIX_FIKA_QUEST_CONFLICT.md" />
     <None Include="QuestExtended\IMPLEMENTATION_SUMMARY.md" />
     <None Include="QuestExtended\README_QUEST_SYNC.md" />
+    <None Include="TESTING_SPAWN_FIX.md" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
