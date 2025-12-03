@@ -182,6 +182,7 @@
     <None Include="Health\FIX_EXTRACTION_ERRORS.md" />
     <None Include="Health\FIX_HARMONYWARNING_SPAM.md" />
     <None Include="Health\FIX_RESOURCE_DRAIN_EXTRACTION.md" />
+    <None Include="Health\FIX_SOLO_WARNING_SPAM.md" />
     <None Include="Health\README_HEALTH_SYNC_FIX.md" />
     <None Include="Health\README_INVENTORY_SAFETY.md" />
     <None Include="Health\TROUBLESHOOTING_EXTRACTION_ERRORS.md" />

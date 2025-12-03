@@ -68,34 +68,62 @@ namespace RealismModSync.Health.Patches
                 if (activeHealthController == null)
                     return false;
 
-                // Try to get the player from the health controller
-                // Search for player field using multiple possible names
-                var healthControllerType = activeHealthController.GetType();
+                // Try to get the player - use different methods based on health controller type
                 Player player = null;
+                var healthControllerType = activeHealthController.GetType();
+                var healthControllerTypeName = healthControllerType.Name;
 
-                // Try common field names for player reference
-                var playerFieldNames = new[] { "player_0", "_player", "player", "Player" };
-                
-                foreach (var fieldName in playerFieldNames)
+                // Only try to access player field if this is a Fika health controller
+                // In offline/single-player mode, we don't need to check the player
+                if (healthControllerTypeName.Contains("Coop") || healthControllerTypeName.Contains("Fika"))
                 {
-                    var playerField = AccessTools.Field(healthControllerType, fieldName);
-                    if (playerField != null)
+                    // This is a multiplayer health controller - try to get player
+                    var playerFieldNames = new[] { "player_0", "_player", "player", "Player" };
+                    
+                    foreach (var fieldName in playerFieldNames)
                     {
-                        player = playerField.GetValue(activeHealthController) as Player;
-                        if (player != null)
-                            break;
+                        try
+                        {
+                            var playerField = AccessTools.Field(healthControllerType, fieldName);
+                            if (playerField != null)
+                            {
+                                player = playerField.GetValue(activeHealthController) as Player;
+                                if (player != null)
+                                    break;
+                            }
+                        }
+                        catch
+                        {
+                            // Silently continue to next field name
+                            continue;
+                        }
+                    }
+
+                    // If we couldn't find the player in multiplayer mode, be conservative and block
+                    if (player == null)
+                        return false;
+
+                    // Use our standard check for multiplayer
+                    if (!Core.ShouldHealthControllerTick(player))
+                    {
+                        // Player is dead, extracting, or game is ending - skip resource drain
+                        return false;
                     }
                 }
-
-                // If we couldn't find the player, be conservative and block the drain
-                if (player == null)
-                    return false;
-
-                // Use our standard check
-                if (!Core.ShouldHealthControllerTick(player))
+                else
                 {
-                    // Player is dead, extracting, or game is ending - skip resource drain
-                    return false;
+                    // Single-player/offline mode - use main player from game world
+                    player = Utils.GetYourPlayer();
+                    
+                    if (player == null)
+                        return false;
+
+                    // Use our standard check
+                    if (!Core.ShouldHealthControllerTick(player))
+                    {
+                        // Player is dead, extracting, or game is ending - skip resource drain
+                        return false;
+                    }
                 }
 
                 // Everything is valid - allow resource drain
