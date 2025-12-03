@@ -2,11 +2,15 @@ using EFT.Quests;
 using HarmonyLib;
 using System.Reflection;
 using SPT.Reflection.Patching;
+using Comfort.Common;
+using EFT;
+using EFT.UI;
 
 namespace RealismModSync.QuestExtended.Patches
 {
     /// <summary>
     /// Patches Quest Extended to synchronize optional condition completions
+    /// Only syncs Quest Extended-specific quests to avoid interfering with Fika's native sharedQuestProgression
     /// </summary>
     public static class QuestExtendedSyncPatches
     {
@@ -21,7 +25,7 @@ namespace RealismModSync.QuestExtended.Patches
             try
             {
                 new HandleVanillaConditionChangedPatch().Enable();
-                Plugin.REAL_Logger.LogInfo("Applied HandleVanillaConditionChangedPatch");
+                Plugin.REAL_Logger.LogInfo("Applied HandleVanillaConditionChangedPatch (Quest Extended conditions only)");
             }
             catch (System.Exception ex)
             {
@@ -31,7 +35,7 @@ namespace RealismModSync.QuestExtended.Patches
             try
             {
                 new HandleQuestStartingConditionCompletionPatch().Enable();
-                Plugin.REAL_Logger.LogInfo("Applied HandleQuestStartingConditionCompletionPatch");
+                Plugin.REAL_Logger.LogInfo("Applied HandleQuestStartingConditionCompletionPatch (Quest Extended conditions only)");
             }
             catch (System.Exception ex)
             {
@@ -42,6 +46,7 @@ namespace RealismModSync.QuestExtended.Patches
 
     /// <summary>
     /// Patches Quest Extended's HandleVanillaConditionChanged to sync condition progress
+    /// Only syncs Quest Extended-specific quests to let Fika handle vanilla quest progression
     /// </summary>
     public class HandleVanillaConditionChangedPatch : ModulePatch
     {
@@ -70,11 +75,22 @@ namespace RealismModSync.QuestExtended.Patches
                 if (string.IsNullOrEmpty(questId))
                     return;
 
+                // IMPORTANT: Only sync Quest Extended-specific quests
+                // Let Fika's sharedQuestProgression handle vanilla quests (like PMC kills)
+                if (!Core.IsQuestExtendedQuest(questId))
+                {
+                    if (Config.OnlySyncQuestExtendedConditions.Value)
+                    {
+                        // This is a vanilla quest - let Fika handle it
+                        return;
+                    }
+                }
+
                 // Don't sync if already synced
                 if (Core.IsConditionAlreadySynced(questId, conditionId))
                     return;
 
-                // Send sync packet
+                // Send sync packet (only for Quest Extended quests)
                 var packet = new Packets.QuestExtendedSyncPacket
                 {
                     QuestId = questId,
@@ -88,7 +104,7 @@ namespace RealismModSync.QuestExtended.Patches
 
                 if (Config.EnableQuestSync.Value)
                 {
-                    Plugin.REAL_Logger.LogInfo($"Synced quest condition progress: {questId}/{conditionId} = {currentValue}");
+                    Plugin.REAL_Logger.LogInfo($"Synced Quest Extended condition progress: {questId}/{conditionId} = {currentValue}");
                 }
             }
             catch (System.Exception ex)
@@ -101,11 +117,11 @@ namespace RealismModSync.QuestExtended.Patches
         {
             try
             {
-                var clientApp = EFT.UI.ClientAppUtils.GetClientApp();
-                if (clientApp == null)
+                var player = Utils.GetYourPlayer();
+                if (player == null)
                     return null;
 
-                var profile = clientApp.GetClientBackEndSession()?.Profile;
+                var profile = player.Profile;
                 if (profile == null)
                     return null;
 
@@ -142,6 +158,7 @@ namespace RealismModSync.QuestExtended.Patches
 
     /// <summary>
     /// Patches Quest Extended's HandleQuestStartingConditionCompletion to sync optional condition completions
+    /// Only syncs Quest Extended-specific quests to let Fika handle vanilla quest progression
     /// </summary>
     public class HandleQuestStartingConditionCompletionPatch : ModulePatch
     {
@@ -173,16 +190,27 @@ namespace RealismModSync.QuestExtended.Patches
                 if (string.IsNullOrEmpty(questId))
                     return;
 
+                // IMPORTANT: Only sync Quest Extended-specific quests
+                // Let Fika's sharedQuestProgression handle vanilla quests
+                if (!Core.IsQuestExtendedQuest(questId))
+                {
+                    if (Config.OnlySyncQuestExtendedConditions.Value)
+                    {
+                        // This is a vanilla quest - let Fika handle it
+                        return;
+                    }
+                }
+
                 // Mark as synced
                 Core.MarkConditionSynced(questId, condition.id);
 
-                // Send completion sync packet
+                // Send completion sync packet (only for Quest Extended quests)
                 var packet = new Packets.QuestExtendedSyncPacket
                 {
                     QuestId = questId,
                     ConditionId = condition.id,
                     SyncType = Packets.EQuestSyncType.ConditionCompleted,
-                    CurrentValue = condition.value,
+                    CurrentValue = (int)condition.value, // Cast float to int
                     IsCompleted = true
                 };
 
@@ -190,7 +218,7 @@ namespace RealismModSync.QuestExtended.Patches
 
                 if (Config.EnableQuestSync.Value)
                 {
-                    Plugin.REAL_Logger.LogInfo($"Synced optional condition completion: {questId}/{condition.id}");
+                    Plugin.REAL_Logger.LogInfo($"Synced Quest Extended optional condition completion: {questId}/{condition.id}");
                 }
             }
             catch (System.Exception ex)
@@ -203,11 +231,11 @@ namespace RealismModSync.QuestExtended.Patches
         {
             try
             {
-                var clientApp = EFT.UI.ClientAppUtils.GetClientApp();
-                if (clientApp == null)
+                var player = Utils.GetYourPlayer();
+                if (player == null)
                     return null;
 
-                var profile = clientApp.GetClientBackEndSession()?.Profile;
+                var profile = player.Profile;
                 if (profile == null)
                     return null;
 

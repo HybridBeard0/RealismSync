@@ -1,5 +1,7 @@
 using EFT.Quests;
 using EFT.UI;
+using Comfort.Common;
+using EFT;
 
 namespace RealismModSync.QuestExtended
 {
@@ -127,11 +129,11 @@ namespace RealismModSync.QuestExtended
         {
             try
             {
-                var clientApp = ClientAppUtils.GetClientApp();
-                if (clientApp == null)
+                var player = Utils.GetYourPlayer();
+                if (player == null)
                     return null;
 
-                var profile = clientApp.GetClientBackEndSession()?.Profile;
+                var profile = player.Profile;
                 if (profile == null)
                     return null;
 

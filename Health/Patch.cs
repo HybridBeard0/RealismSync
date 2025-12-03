@@ -39,6 +39,17 @@ namespace RealismModSync.Health
                 Plugin.REAL_Logger.LogError($"Failed to apply RealismMod custom effect patch: {ex.Message}");
             }
 
+            // Apply resource drain safety patch to prevent extraction errors
+            try
+            {
+                new Patches.RealismResourceDrainSafetyPatch().Enable();
+                Plugin.REAL_Logger.LogInfo("RealismMod resource drain safety patch applied");
+            }
+            catch (System.Exception ex)
+            {
+                Plugin.REAL_Logger.LogError($"Failed to apply RealismMod resource drain safety patch: {ex.Message}");
+            }
+
             // Apply inventory sync safety patches to prevent bot inventory errors
             Plugin.REAL_Logger.LogInfo("Applying inventory sync safety patches...");
             Patches.InventorySyncSafetyPatches.ApplyPatches();

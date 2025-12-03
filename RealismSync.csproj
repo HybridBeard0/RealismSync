@@ -147,12 +147,20 @@
     <Compile Include="Health\Patches\FikaHealthSyncCompatibilityPatch.cs" />
     <Compile Include="Health\Patches\InventorySyncSafetyPatch.cs" />
     <Compile Include="Health\Patches\RealismCustomEffectPatch.cs" />
+    <Compile Include="Health\Patches\RealismResourceDrainSafetyPatch.cs" />
     <Compile Include="Health\PluginConfig.cs" />
     <Compile Include="Health\Packets\RealismMedicalSyncPacket.cs" />
     <Compile Include="Health\Patches\RealismHealthControllerUpdatePatch.cs" />
     <Compile Include="Health\Patches\RealismMedicalSyncPatches.cs" />
     <Compile Include="Plugin.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="QuestExtended\Config.cs" />
+    <Compile Include="QuestExtended\Core.cs" />
+    <Compile Include="QuestExtended\Fika.cs" />
+    <Compile Include="QuestExtended\NetworkSync.cs" />
+    <Compile Include="QuestExtended\Packets\QuestExtendedSyncPacket.cs" />
+    <Compile Include="QuestExtended\Patch.cs" />
+    <Compile Include="QuestExtended\Patches\QuestExtendedSyncPatches.cs" />
     <Compile Include="StanceReplication\Components\RSR_Component.cs" />
     <Compile Include="StanceReplication\Components\RSR_Observed_Component.cs" />
     <Compile Include="StanceReplication\Config.cs" />
@@ -168,10 +176,16 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Health\DMD_PATCHING_FIX.md" />
+    <None Include="Health\FIX_EXTRACTION_ERRORS.md" />
     <None Include="Health\FIX_HARMONYWARNING_SPAM.md" />
+    <None Include="Health\FIX_RESOURCE_DRAIN_EXTRACTION.md" />
     <None Include="Health\README_HEALTH_SYNC_FIX.md" />
     <None Include="Health\README_INVENTORY_SAFETY.md" />
+    <None Include="Health\TROUBLESHOOTING_EXTRACTION_ERRORS.md" />
     <None Include="MOD_COMPATIBILITY.md" />
+    <None Include="QuestExtended\FIX_FIKA_QUEST_CONFLICT.md" />
+    <None Include="QuestExtended\IMPLEMENTATION_SUMMARY.md" />
+    <None Include="QuestExtended\README_QUEST_SYNC.md" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

@@ -1,6 +1,16 @@
 # Fix: Extraction/Cleanup NullReferenceException Spam
 
-## Problem
+## UPDATE: Additional Fix Required
+
+This document covers the original `HealthEffecTick` prevention patch. However, a race condition was discovered where resource drain could still execute during an in-progress tick.
+
+**See**: `FIX_RESOURCE_DRAIN_EXTRACTION.md` for the additional `DoResourceDrain` safety patch.
+
+**TL;DR**: We now have TWO layers of protection:
+1. **This patch** - Prevents new health ticks from starting during extraction
+2. **DoResourceDrain patch** - Stops resource drain in ticks already in progress
+
+## Original Problem
 
 During player extraction (when clicking extract and waiting for Fika to close the raid), massive NullReferenceException spam occurs:
 

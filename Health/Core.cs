@@ -86,7 +86,7 @@ namespace RealismModSync.Health
         /// Checks if Fika network layer is active and ready to send/receive packets
         /// Returns false during extraction/cleanup when network is shutting down
         /// </summary>
-        private static bool IsNetworkActive()
+        public static bool IsNetworkActive()
         {
             try
             {

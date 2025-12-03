@@ -1,6 +1,7 @@
 using Fika.Core.Modding;
 using Fika.Core.Modding.Events;
 using Fika.Core.Networking;
+using Fika.Core.Coop.Utils;
 using LiteNetLib;
 using Comfort.Common;
 
@@ -23,35 +24,23 @@ namespace RealismModSync.QuestExtended
             }
 
             FikaEventDispatcher.SubscribeEvent<FikaNetworkManagerCreatedEvent>(OnNetworkManagerCreated);
-            FikaEventDispatcher.SubscribeEvent<FikaClientCreatedEvent>(OnClientCreated);
-            FikaEventDispatcher.SubscribeEvent<FikaServerCreatedEvent>(OnServerCreated);
 
             Plugin.REAL_Logger.LogInfo("Quest Extended Fika events registered");
         }
 
-        private static void OnNetworkManagerCreated(FikaNetworkManagerCreatedEvent @event)
+        private static void OnNetworkManagerCreated(FikaNetworkManagerCreatedEvent ev)
         {
-            @event.NetworkManager.RegisterPacket<Packets.QuestExtendedSyncPacket>();
-        }
-
-        private static void OnClientCreated(FikaClientCreatedEvent @event)
-        {
-            @event.Client.NetClient.SubscribeNetSerializable<Packets.QuestExtendedSyncPacket, NetPeer>(OnQuestSyncPacketReceived, () => new Packets.QuestExtendedSyncPacket());
-        }
-
-        private static void OnServerCreated(FikaServerCreatedEvent @event)
-        {
-            @event.Server.NetServer.SubscribeNetSerializable<Packets.QuestExtendedSyncPacket, NetPeer>(OnQuestSyncPacketReceivedServer, () => new Packets.QuestExtendedSyncPacket());
-        }
-
-        private static void OnQuestSyncPacketReceived(Packets.QuestExtendedSyncPacket packet, NetPeer peer)
-        {
-            if (Config.EnableQuestSync.Value)
+            switch (ev.Manager)
             {
-                Plugin.REAL_Logger.LogInfo($"Client received quest sync packet: {packet.QuestId}/{packet.ConditionId}");
+                case FikaServer server:
+                    server.RegisterPacket<Packets.QuestExtendedSyncPacket, NetPeer>(OnQuestSyncPacketReceivedServer);
+                    Plugin.REAL_Logger.LogInfo("Registered QuestExtendedSyncPacket with Fika server");
+                    break;
+                case FikaClient client:
+                    client.RegisterPacket<Packets.QuestExtendedSyncPacket>(OnQuestSyncPacketReceivedClient);
+                    Plugin.REAL_Logger.LogInfo("Registered QuestExtendedSyncPacket with Fika client");
+                    break;
             }
-
-            NetworkSync.ProcessQuestSyncPacket(packet);
         }
 
         private static void OnQuestSyncPacketReceivedServer(Packets.QuestExtendedSyncPacket packet, NetPeer peer)
@@ -61,14 +50,24 @@ namespace RealismModSync.QuestExtended
                 Plugin.REAL_Logger.LogInfo($"Server received quest sync packet from peer, broadcasting: {packet.QuestId}/{packet.ConditionId}");
             }
 
+            // Process locally on server
+            NetworkSync.ProcessQuestSyncPacket(packet);
+
             // Server receives from one client and broadcasts to all others
             if (Singleton<FikaServer>.Instantiated)
             {
                 var server = Singleton<FikaServer>.Instance;
                 server.SendDataToAll(ref packet, DeliveryMethod.ReliableOrdered, peer);
             }
+        }
 
-            // Also process locally on server
+        private static void OnQuestSyncPacketReceivedClient(Packets.QuestExtendedSyncPacket packet)
+        {
+            if (Config.EnableQuestSync.Value)
+            {
+                Plugin.REAL_Logger.LogInfo($"Client received quest sync packet: {packet.QuestId}/{packet.ConditionId}");
+            }
+
             NetworkSync.ProcessQuestSyncPacket(packet);
         }
 
